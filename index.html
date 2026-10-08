@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0b09">
+<title>黑土视界 · 梨树黑土数字孪生观测站</title>
+<meta name="description" content="基于 Copernicus DEM、SoilGrids、Sentinel-2 与 NASA POWER 的梨树黑土地数字孪生：三维地形、两米土壤剖面、侵蚀格局与保护性耕作情景推演。">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<a class="skip-link" href="#twin">跳到数字孪生</a>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="黑土视界 首页">
+    <span class="mark">土</span>
+    <span class="brand-text"><strong>黑土视界</strong><em>BLACK SOIL ATLAS</em></span>
+  </a>
+  <nav aria-label="主导航">
+    <a href="#insights"><b>00</b>发现</a>
+    <a href="#twin"><b>01</b>孪生</a>
+    <a href="#carbon"><b>02</b>碳库</a>
+    <a href="#erosion"><b>03</b>侵蚀</a>
+    <a href="#sensitivity"><b>04</b>情景</a>
+    <a href="#method"><b>05</b>方法</a>
+  </nav>
+  <div class="status"><span class="pulse"></span><span id="data-status">数据载入中</span></div>
+  <div class="progress" aria-hidden="true"><span id="scroll-progress"></span></div>
+</header>
+
+<section class="hero" id="top">
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-shade" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="hero-meta mono">
+      <span>LISHU · JILIN · 43.20–43.45°N / 124.20–124.55°E</span>
+      <span>背景：样区真实 DEM · 5 m 等高线 · 100 条汇流路径</span>
+    </div>
+    <h1 class="hero-title">同一场雨，<br>十年后相差 <span class="accent"><span data-count="25.2" data-dec="1">25.2</span> 毫米</span><br>黑土。</h1>
+    <p class="hero-lede">梨树样区 788 km² 的空天地数字孪生。从卫星地表到两米深的地下碳库，用可追溯的开放数据推演保护性耕作的价值——并诚实标出模型的边界。</p>
+    <div class="hero-cta">
+      <a class="btn primary" href="#twin">进入数字孪生 <i data-lucide="arrow-down-right"></i></a>
+      <a class="btn ghost" href="#insights">先看四个结论</a>
+    </div>
+  </div>
+  <dl class="hero-kpis">
+    <div><dt>样区面积</dt><dd><span data-count="788.48" data-dec="2">788.48</span><small>km²</small></dd></div>
+    <div><dt>两米土体有机碳库存</dt><dd><span data-count="1438" data-dec="0">1438</span><small>万吨 C</small></dd></div>
+    <div><dt>管理因子侵蚀抑制潜力</dt><dd><span data-count="91.8" data-dec="1">91.8</span><small>%</small></dd></div>
+    <div><dt>侵蚀集中于前 10% 面积</dt><dd><span data-count="42.2" data-dec="1">42.2</span><small>%</small></dd></div>
+  </dl>
+  <a class="scroll-cue" href="#insights" aria-label="向下滚动"><span></span></a>
+</section>
+
+<section class="chapter" id="insights">
+  <div class="chapter-head">
+    <span class="chapter-no mono">00 — KEY FINDINGS</span>
+    <h2>四个结论，<br>每个都能在孪生中复现。</h2>
+    <p>结论先行，证据随后。点击卡片底部按钮，三维场景会切换到对应的图层、年份与视角。</p>
+  </div>
+  <div class="insight-grid">
+    <article class="insight" style="--tone:var(--jade)">
+      <span class="insight-no mono">01 / 保护价值</span>
+      <strong class="insight-num"><span id="ins-retain">25.2</span><small>mm</small></strong>
+      <h3>十年表层保留差</h3>
+      <p>同一降水序列下，传统耕作剩余 <b id="ins-a">272.5</b> mm，梨树模式剩余 <b id="ins-b">297.8</b> mm（初始假设 300 mm）。</p>
+      <button class="insight-go" data-goto="protect">在孪生中查看 <i data-lucide="arrow-up-right"></i></button>
+    </article>
+    <article class="insight" style="--tone:var(--rust)">
+      <span class="insight-no mono">02 / 风险集中</span>
+      <strong class="insight-num"><span id="ins-zone">46.7</span><small>%</small></strong>
+      <h3>缓坡才是主战场</h3>
+      <p>2–5° 坡面只占 <b id="ins-zone-area">17.7</b>% 面积，却贡献近一半模型侵蚀量；陡坡虽强但面积太小。</p>
+      <button class="insight-go" id="inspect-hotspots">查看侵蚀热点 <i data-lucide="arrow-up-right"></i></button>
+    </article>
+    <article class="insight" style="--tone:var(--amber)">
+      <span class="insight-no mono">03 / 地下碳库</span>
+      <strong class="insight-num"><span id="ins-deep">36</span><small>%</small></strong>
+      <h3>看不见的一半碳</h3>
+      <p>1–2 m 深层浓度只有表层的 1/4，但层厚大，贡献两米碳库的三分之一以上。</p>
+      <button class="insight-go" data-goto="soil">在孪生中查看 <i data-lucide="arrow-up-right"></i></button>
+    </article>
+    <article class="insight" style="--tone:var(--cyan)">
+      <span class="insight-no mono">04 / 证据边界</span>
+      <strong class="insight-num">ρ <span id="ins-rho">−0.03</span></strong>
+      <h3>绿，不等于肥</h3>
+      <p>夏季 NDVI 与表层 SOC 几乎无相关。遥感绿度不能替代地下肥力监测。</p>
+      <button class="insight-go" data-goto="ndvi">查看关联分析 <i data-lucide="arrow-up-right"></i></button>
+    </article>
+  </div>
+</section>
+
+<section class="chapter" id="twin">
+  <div class="chapter-head">
+    <span class="chapter-no mono">01 — DIGITAL TWIN</span>
+    <h2>把 788 km² 放在桌面上，<br>切开它。</h2>
+    <p>320×314 真实地形网格、Sentinel-2 真彩色纹理、10 m 等高线与 100 条汇流路由。拖动旋转、滚轮缩放、点击地表取一根虚拟土芯。</p>
+  </div>
+
+  <div class="story-bar" role="group" aria-label="演示路线">
+    <span class="mono">演示路线</span>
+    <button type="button" data-story="surface"><b>01</b>看地貌</button>
+    <button type="button" data-story="soil"><b>02</b>看剖面</button>
+    <button type="button" data-story="protect"><b>03</b>看保护</button>
+  </div>
+
+  <main class="twin-shell">
+    <section class="stage workspace">
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="空间图层">
+          <button data-mode="satellite" class="active">卫星</button>
+          <button data-mode="soc">有机碳</button>
+          <button data-mode="elevation">高程</button>
+          <button data-mode="risk">风险</button>
+          <button data-mode="erosion">侵蚀</button>
+        </div>
+        <label class="select-wrap"><span class="sr-only">生态专题图层</span>
+          <select id="extra-layer">
+            <option value="">更多专题…</option>
+            <option value="stock30">0–30 cm 碳储量</option>
+            <option value="stock100">0–100 cm 碳储量</option>
+            <option value="stock200">0–200 cm 碳储量</option>
+            <option value="ndvi">Sentinel-2 NDVI</option>
+            <option value="twi">地形湿润指数</option>
+            <option value="aspect">坡向</option>
+            <option value="slope">坡度</option>
+            <option value="uncertainty">SOC 预测不确定性</option>
+          </select>
+        </label>
+        <div class="toolbar-end">
+          <div class="seg seg-sm view-presets" role="group" aria-label="相机视角">
+            <button type="button" class="view-preset active" data-view="bird">鸟瞰</button>
+            <button type="button" class="view-preset" data-view="profile">剖面</button>
+            <button type="button" class="view-preset" data-view="flat">平视</button>
+          </div>
+          <div class="tools">
+            <button id="topview" title="俯视" aria-label="俯视空间分布"><i data-lucide="map"></i></button>
+            <button id="reset" title="恢复视角" aria-label="恢复视角"><i data-lucide="rotate-ccw"></i></button>
+            <button id="capture" title="导出场景图片" aria-label="导出场景图片"><i data-lucide="camera"></i></button>
+            <button id="fullscreen" title="全屏" aria-label="三维场景全屏"><i data-lucide="maximize"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div id="scene" role="img" aria-label="梨树样区三维地形与土壤剖面">
+        <div class="scene-label">
+          <span>四平市 · 梨树县 <b class="live-pill">SOURCE VERIFIED</b></span>
+          <strong class="mono">124.20–124.55° E / 43.20–43.45° N</strong>
+        </div>
+        <div class="scene-hud"><span id="hud-layer">卫星真彩色</span><span id="hud-view">鸟瞰</span><span id="hud-year">2015 · 传统耕作</span></div>
+        <div class="north mono">N<i>↑</i></div>
+        <div class="mini-map"><canvas id="minimap" role="img" aria-label="地形定位小地图"></canvas><span>点击定位</span></div>
+        <div id="hover-info" class="mono" hidden></div>
+        <div class="legend"><span id="legend-title">卫星真彩色</span><div id="ramp"></div><div class="legend-values mono"><span id="legend-low"></span><span id="legend-high"></span></div></div>
+        <div class="scene-note mono"></div>
+        <div id="loading"><span class="spinner"></span>正在构建 10 万顶点地形…</div>
+      </div>
+
+      <div class="layer-explanation"><i data-lucide="info"></i><p id="layer-explanation" aria-live="polite"></p></div>
+
+      <div class="dock">
+        <div class="dock-block timeline">
+          <div class="dock-head">
+            <span>时空推演</span>
+            <strong id="year-value" class="mono">2015</strong>
+            <div class="seg seg-sm"><button id="scenarioA" class="active">传统耕作</button><button id="scenarioB">梨树模式</button></div>
+            <button id="play" class="icon-btn" title="播放时间轴" aria-label="播放时间轴"><i data-lucide="play"></i></button>
+          </div>
+          <input id="year" type="range" min="2015" max="2025" value="2015" step="1" aria-label="年份">
+          <div class="time-labels mono"><span>2015</span><span>2017</span><span>2019</span><span>2021</span><span>2023</span><span>2025</span></div>
+        </div>
+        <div class="dock-block">
+          <label class="slider"><span>空间剖切 <output id="cut-value" class="mono">72%</output></span><input id="cut" type="range" min="5" max="100" value="72"></label>
+          <label class="slider"><span>表面土层 <output id="layer-value" class="mono">0–5 cm</output></span><input id="layer" type="range" min="0" max="5" value="0" step="1"></label>
+        </div>
+        <div class="dock-block">
+          <label class="slider"><span>地形夸张 <output id="exag-value" class="mono">32×</output></span><input id="exaggeration" type="range" min="1" max="60" step="1" value="32"></label>
+          <div class="switches">
+            <label class="check"><input type="checkbox" id="fullmap" checked>完整地表</label>
+            <label class="check"><input type="checkbox" id="contours" checked>等高线</label>
+            <label class="check"><input type="checkbox" id="runoff" checked>汇流</label>
+            <label class="check"><input id="explode" type="checkbox">六层分解</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="inspector" aria-label="地块检查器">
+      <section class="location">
+        <div class="ins-head"><span class="mono">INSPECTOR</span><h3>地块诊断</h3><button id="point-export" class="icon-btn" aria-label="导出地块数据" title="导出地块 JSON"><i data-lucide="download"></i></button></div>
+        <div class="point-id"><strong id="point-label">样区中部</strong><span id="coords" class="mono"></span></div>
+        <div class="point-grid">
+          <div><span>高程</span><strong id="point-elevation" class="mono"></strong></div>
+          <div><span>碳库 0–30 cm</span><strong id="point-stock" class="mono"></strong></div>
+          <div><span>NDVI</span><strong id="point-ndvi" class="mono"></strong></div>
+          <div><span>传统十年剥蚀</span><strong id="point-loss" class="mono"></strong></div>
+        </div>
+        <p id="point-diagnosis" aria-live="polite"></p>
+      </section>
+      <section class="core">
+        <div class="ins-head"><h3>虚拟土芯</h3><span class="mono">0–200 cm</span></div>
+        <div class="core-layout">
+          <div id="core-column"></div>
+          <table><thead><tr><th>深度 cm</th><th>SOC</th><th>容重</th><th>pH</th></tr></thead><tbody id="core-table" class="mono"></tbody></table>
+        </div>
+        <div class="units">SOC g/kg · 容重 g/cm³ · 色带为 SOC 色标</div>
+      </section>
+      <section class="profile">
+        <div class="ins-head"><h3>纬向地形剖面</h3><span class="mono">高程 m</span></div>
+        <canvas id="terrain-profile" aria-label="选定地块所在纬向地形剖面"></canvas>
+        <span class="units">西 → 东 · 点击曲线切换地块</span>
+      </section>
+      <section class="comparison">
+        <div class="ins-head"><h3>表层保留厚度</h3><span class="mono">mm</span></div>
+        <canvas id="chart" aria-label="2015至2025两种模式表层保留厚度曲线"></canvas>
+        <div class="compare-values">
+          <div class="a"><span>传统</span><strong id="remain-a" class="mono"></strong></div>
+          <div class="b"><span>梨树</span><strong id="remain-b" class="mono"></strong></div>
+          <div><span>保留差</span><strong id="difference" class="mono"></strong></div>
+        </div>
+      </section>
+    </aside>
+  </main>
+  <p class="twin-foot mono">EPSG:32651 · 6 层 / 0–200 cm · 2015–2024 降水驱动 · 汇流粒子为累积栅格锚点上的示意动画，非水动力流速</p>
+</section>
+
+<section class="chapter" id="carbon">
+  <div class="chapter-head">
+    <span class="chapter-no mono">02 — CARBON BELOW</span>
+    <h2>碳，大多藏在<br>你看不见的地方。</h2>
+    <p id="extension-status">SoilGrids 2.0 六层预测，经容重、层厚与砾石校正积分为碳储量。注意区分「空间变异」与「预测不确定性」——它们回答的是不同问题。</p>
+  </div>
+  <div class="grid g-12">
+    <article class="card span-7">
+      <header class="card-head"><h3>土壤有机碳垂直剖面</h3><span class="mono">g/kg · 深度轴 √ 尺度</span></header>
+      <p class="takeaway" id="tk-depth"></p>
+      <canvas id="depth-chart" class="h-340" aria-label="六层SOC均值、空间标准差与预测区间"></canvas>
+      <div class="chart-key"><span class="k-bar">层均值</span><span class="k-line">±1 空间标准差</span><span class="k-band">Q05–Q95 预测区间（层平均）</span></div>
+    </article>
+    <article class="card span-5">
+      <header class="card-head"><h3>两米碳柱</h3><span class="mono">tC/ha · 砾石校正</span></header>
+      <p class="takeaway" id="tk-stock"></p>
+      <canvas id="stock-chart" class="h-340" aria-label="三个深度区间碳储量构成及SOC分位包络"></canvas>
+      <div class="chart-foot">线段为仅 SOC 分位驱动的包络，非储量联合置信区间。库存 ≠ 可交易固碳增量。</div>
+    </article>
+    <article class="card span-6">
+      <header class="card-head"><h3>变量关联矩阵</h3><span class="mono">Spearman ρ · 全分辨率抽样</span></header>
+      <p class="takeaway" id="tk-corr"></p>
+      <canvas id="corr-chart" class="h-360" aria-label="七个空间变量的Spearman相关矩阵"></canvas>
+      <div class="chart-foot">抽样步长 50，保留空间自相关，不做显著性或因果推断。</div>
+    </article>
+    <article class="card span-6">
+      <header class="card-head"><h3>土壤预测可信度</h3><span class="mono">(Q95 − Q05) / SOC</span></header>
+      <p class="takeaway" id="tk-unc"></p>
+      <canvas id="uncertainty-chart" class="h-360" aria-label="SOC相对预测区间宽度分布"></canvas>
+      <div class="chart-foot">SoilGrids 预测分位；比值越大，预测区间相对均值越宽。</div>
+    </article>
+  </div>
+</section>
+
+<section class="chapter" id="erosion">
+  <div class="chapter-head">
+    <span class="chapter-no mono">03 — EROSION PATTERN</span>
+    <h2>侵蚀不是均匀发生的，<br>治理也不该均匀投入。</h2>
+    <p>RUSLE 坡面代理模型，2015–2024 月降水驱动。以下判断用于空间优先级筛查，不是实测流失量。</p>
+  </div>
+  <div class="grid g-12">
+    <article class="card span-5">
+      <header class="card-head"><h3>侵蚀集中度曲线</h3><span class="mono">洛伦兹曲线 · 传统情景</span></header>
+      <p class="takeaway" id="tk-lorenz"></p>
+      <canvas id="lorenz-chart" class="h-320" aria-label="按侵蚀量降序排列的累计面积与累计侵蚀占比"></canvas>
+      <div class="chart-foot">显示网格 160×157 计算；全分辨率前 10% 承载 <b id="hotspot-share">42.2%</b>。</div>
+    </article>
+    <article class="card span-7">
+      <header class="card-head"><h3>坡度分区：面积 × 强度</h3><span class="mono">宽 = 面积占比 · 高 = 十年均值 mm</span></header>
+      <p class="takeaway" id="tk-zone"></p>
+      <canvas id="zone-chart" class="h-320" aria-label="各坡度区间面积占比与平均侵蚀量的马赛克图"></canvas>
+      <div class="chart-foot">矩形面积 ∝ 该区间侵蚀总量。传统情景，区间均值。</div>
+    </article>
+    <article class="card span-12">
+      <header class="card-head"><h3>气候驱动与年度侵蚀响应</h3><span class="mono">2015–2024 · 左轴 t/(km²·a) · 右轴 mm</span></header>
+      <p class="takeaway" id="tk-annual"></p>
+      <canvas id="annual-response" class="h-320" aria-label="逐年传统与梨树模式侵蚀量，并列年降水"></canvas>
+      <div class="chart-key"><span class="k-rust">传统耕作</span><span class="k-jade">梨树模式</span><span class="k-cyan">年降水</span></div>
+    </article>
+    <article class="card span-7">
+      <header class="card-head"><h3>月气候热力图</h3>
+        <label class="select-wrap sm"><span class="sr-only">气候变量</span><select id="climate-var">
+          <option value="PRECTOTCORR">月总降水 · mm</option>
+          <option value="T2M">平均气温 · °C</option>
+          <option value="WS2M">2 m 风速 · m/s</option>
+          <option value="ALLSKY_SFC_SW_DWN">短波辐射 · kWh/m²/d</option>
+        </select></label>
+      </header>
+      <p class="takeaway" id="tk-climate"></p>
+      <canvas id="climate-chart" class="h-400" aria-label="逐月气候热力图及年、月边际"></canvas>
+      <div class="chart-foot">NASA POWER / MERRA-2 · 样区中心点粗分辨率资料 · 右侧为年合计/均值，底部为月气候态。</div>
+    </article>
+    <article class="card span-5">
+      <header class="card-head"><h3>空间关联探索</h3><span id="rho-value" class="mono"></span></header>
+      <div class="scatter-controls">
+        <label>X <span class="select-wrap sm"><select id="scatter-x"><option value="slope">坡度 °</option><option value="twi">湿润指数</option><option value="ndvi">NDVI</option></select></span></label>
+        <label>Y <span class="select-wrap sm"><select id="scatter-y"><option value="erosion">十年剥蚀 mm</option><option value="soc">表层 SOC g/kg</option><option value="stock30">碳储量 tC/ha</option></select></span></label>
+      </div>
+      <canvas id="scatter-chart" class="h-340" aria-label="空间指标密度散点图"></canvas>
+      <div class="chart-foot">颜色 = 像元密度（对数），折线 = 分箱中位数。点击图中任一位置，在孪生中定位最近地块。</div>
+    </article>
+  </div>
+</section>
+
+<section class="chapter" id="sensitivity">
+  <div class="chapter-head">
+    <span class="chapter-no mono">04 — SCENARIO LAB</span>
+    <h2>如果换一种种地方式，<br>会怎样？</h2>
+    <p>RUSLE 中 A = R·K·LS·C·P。地形与土壤不变，调整覆盖管理 C、水保措施 P 与降雨侵蚀力 R，实时看到样区年均侵蚀的响应。</p>
+  </div>
+  <div class="lab">
+    <div class="lab-controls card">
+      <label class="slider big"><span>覆盖管理 C <output id="c-value" class="mono">0.08</output></span><input id="c-factor" type="range" min="0.02" max="0.5" step="0.01" value="0.08"><em>秸秆覆盖、免耕越强，C 越小</em></label>
+      <label class="slider big"><span>水保措施 P <output id="p-value" class="mono">0.35</output></span><input id="p-factor" type="range" min="0.1" max="1" step="0.05" value="0.35"><em>等高垄作、条带种植降低 P</em></label>
+      <label class="slider big"><span>降雨侵蚀力倍率 R <output id="r-value" class="mono">1.00×</output></span><input id="r-factor" type="range" min="0.5" max="2" step="0.05" value="1"><em>模拟更湿或更干的气候年景</em></label>
+      <div class="presets" role="group" aria-label="情景预设">
+        <button type="button" data-preset="0.38,0.9,1">传统耕作</button>
+        <button type="button" data-preset="0.08,0.35,1">梨树模式</button>
+        <button type="button" data-preset="0.08,0.35,1.6">梨树 + 极端湿年</button>
+      </div>
+      <div class="sensitivity-results">
+        <div><span>样区年均侵蚀</span><strong id="s-erosion" class="mono"></strong><small>t/(km²·a)</small></div>
+        <div><span>相对传统基准</span><strong id="s-reduction" class="mono"></strong><small>变化比例</small></div>
+        <div><span>相对容许流失量</span><strong id="s-tolerance" class="mono"></strong><small>× 200 t/(km²·a)</small></div>
+      </div>
+      <div class="tolerance-bar" aria-hidden="true"><span id="tol-fill"></span><i></i></div>
+    </div>
+    <article class="card lab-surface">
+      <header class="card-head"><h3>C × P 响应面</h3><span class="mono">颜色 = 年均侵蚀 · 对数色标</span></header>
+      <p class="takeaway" id="tk-surface"></p>
+      <canvas id="cp-surface" class="h-440" aria-label="C与P组合下的样区年均侵蚀响应面，可点击设置参数"></canvas>
+      <div class="chart-foot">虚线为东北黑土区容许土壤流失量 200 t/(km²·a)（SL 190）等值线。点击响应面直接设定 C、P。未经本地校准，仅作情景比较。</div>
+    </article>
+  </div>
+</section>
+
+<section class="chapter" id="method">
+  <div class="chapter-head">
+    <span class="chapter-no mono">05 — METHOD & LIMITS</span>
+    <h2>好的分析，<br>先说清楚它不能回答什么。</h2>
+    <p>分位数用于识别偏态与尾部；30 m 重采样像元不是独立观测样本，重采样也不会提高原生观测精度。</p>
+  </div>
+  <div class="grid g-12">
+    <article class="card span-12">
+      <header class="card-head"><h3>指标分布与稳健区间</h3><span class="mono">全分辨率有效像元分位 · 箱 = P25–P75 · 须 = P05–P95</span></header>
+      <div class="table-wrap"><table class="distribution-table"><thead><tr><th>指标</th><th class="dist-col">分布形态</th><th>P05</th><th>P25</th><th>中位数</th><th>P75</th><th>P95</th><th>单位</th></tr></thead><tbody id="distribution-table"></tbody></table></div>
+    </article>
+    <article class="card span-5 sat-card">
+      <header class="card-head"><h3>样区卫星真彩色</h3><span class="mono">Sentinel-2 L2A · 2025 夏</span></header>
+      <img src="satellite.png" alt="梨树样区夏季多日期真彩色拼接，云及阴影缺测处为黑色" loading="lazy">
+      <div class="chart-foot">7 月 6 日、7 月 21 日、8 月 20 日拼接 · 黑色为缺测 · 非同期影像</div>
+    </article>
+    <article class="card span-7">
+      <header class="card-head"><h3>数据谱系</h3><span class="mono">全部开放数据 · 可追溯</span></header>
+      <ol class="lineage">
+        <li><b>地形</b><span>Copernicus GLO-30 DSM</span><em>30 m · 显示 320×314</em></li>
+        <li><b>土壤六层</b><span>SoilGrids 2.0 · SOC / 容重 / pH / 砾石</span><em>原生约 250 m</em></li>
+        <li><b>预测分位</b><span>SOC Q0.05 / Q0.95</span><em>边际区间</em></li>
+        <li><b>遥感</b><span>Sentinel-2 L2A · SCL 云掩膜 · BOA 偏移校正</span><em>NDVI 有效 <span id="ndvi-cov">99.15</span>%</em></li>
+        <li><b>气候</b><span>NASA POWER 月序列</span><em>132 个月</em></li>
+        <li><b>侵蚀</b><span>RUSLE 坡面代理 · 月降水 R 函数</span><em>未校准情景</em></li>
+      </ol>
+      <div class="method-details">
+        <details open><summary>遥感观测</summary><p>2025 夏季 Sentinel-2 地表反射率，多日期瓦片拼接。不能从单次影像推断长期保护效果。</p></details>
+        <details><summary>土壤空间预测</summary><p>SoilGrids 约 250 m 原生模型。30 m 重采样不会创造新的观测。碳储量 = SOC × 容重 × 层厚 × 0.1 × (1 − 砾石体积分数)。</p></details>
+        <details><summary>侵蚀情景</summary><p>固定 C/P 与月降水 R 函数，未经本地校准；不含沟蚀、冻融、风蚀和沉积。</p></details>
+        <details><summary>三维展示与尺度</summary><p>地形夸张可调，地下深度 ×1800，侵蚀形变 ×3000 且上限 100 mm；六层展开等间距仅便于比较，非真实层厚。</p></details>
+      </div>
+    </article>
+  </div>
+  <p class="closing">土壤储量不等于固碳增量；预测分位不等于观测变化。<br>实际推广效果，需要定位监测来校准。</p>
+</section>
+
+<footer class="site-foot">
+  <div class="brand"><span class="mark">土</span><span class="brand-text"><strong>黑土视界</strong><em>BLACK SOIL ATLAS</em></span></div>
+  <div class="foot-links">
+    <a href="EXTENDED_REPORT.md">扩展分析报告 <i data-lucide="arrow-up-right"></i></a>
+    <a href="REPORT.md">数据分析报告 <i data-lucide="arrow-up-right"></i></a>
+    <a href="outputs/extended_summary.json" download>分析数据 <i data-lucide="download"></i></a>
+    <a href="outputs/vr_mapping.json" download>三维映射配置 <i data-lucide="download"></i></a>
+  </div>
+  <span class="mono">EPSG:32651 · 离线可运行 · three.js r128</span>
+</footer>
+
+<div id="toast" role="status" hidden></div>
+<script src="three.min.js"></script>
+<script src="OrbitControls.js"></script>
+<script src="lucide.js"></script>
+<script src="data.js"></script>
+<script src="terrain-data.js"></script>
+<script src="terrain.js"></script>
+<script src="charts.js"></script>
+<script src="story.js"></script>
+</body>
+</html>

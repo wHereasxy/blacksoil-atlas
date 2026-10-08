@@ -1,0 +1,119 @@
+{
+  "crs": "EPSG:32651",
+  "bbox_wgs84": [
+    124.2,
+    43.2,
+    124.55,
+    43.45
+  ],
+  "width": 962,
+  "height": 942,
+  "layers_cm": [
+    0,
+    5,
+    15,
+    30,
+    60,
+    100,
+    200
+  ],
+  "layer_centres_cm": [
+    2.5,
+    10,
+    22.5,
+    45,
+    80,
+    150
+  ],
+  "spacing_m": 30,
+  "transform": [
+    30.0,
+    0.0,
+    597090.0,
+    0.0,
+    -30.0,
+    4811970.0
+  ],
+  "world_axes": {
+    "X": "east",
+    "Y": "up",
+    "Z": "north"
+  },
+  "raw_layout": "little-endian float32; x fastest, northward y, depth layer slowest",
+  "outside_alpha": 0,
+  "texture_sampling": "piecewise depth lookup; do not assume six equal-thickness slices",
+  "gully_expansion_m_year": null,
+  "erosion_model": "RUSLE hillslope scenario; R monthly-rain proxy; no calibrated gully model",
+  "channels": {
+    "soc": {
+      "file": "soc.raw",
+      "minimum": 3.4090962409973145,
+      "maximum": 63.799713134765625,
+      "invalid_file": "validity.raw"
+    },
+    "bdod": {
+      "file": "bdod.raw",
+      "minimum": 1.2000104188919067,
+      "maximum": 1.5,
+      "invalid_file": "validity.raw"
+    },
+    "phh2o": {
+      "file": "phh2o.raw",
+      "minimum": 6.000124931335449,
+      "maximum": 7.899999141693115,
+      "invalid_file": "validity.raw"
+    }
+  },
+  "dem": {
+    "file": "dem.tif",
+    "height_min_m": 132.29522705078125,
+    "height_max_m": 287.1341247558594,
+    "height_formula": "Y=hmin+height01*(hmax-hmin)-origin_height",
+    "vertical_exaggeration": 1
+  },
+  "ndvi": {
+    "file": "ndvi.tif",
+    "stops": [
+      [
+        -0.2,
+        "#95846C"
+      ],
+      [
+        0.2,
+        "#CAB278"
+      ],
+      [
+        0.5,
+        "#76964C"
+      ],
+      [
+        0.85,
+        "#164B2B"
+      ]
+    ],
+    "missing_color": "#777777"
+  },
+  "soc_color": {
+    "stops": [
+      [
+        0,
+        "#D9C893"
+      ],
+      [
+        0.5,
+        "#A45A36"
+      ],
+      [
+        1,
+        "#25170F"
+      ]
+    ],
+    "alpha": "alpha=validity*clamp(SOC_normalized,0,1)"
+  },
+  "flow": {
+    "accumulation_file": "flow_accum_cells.tif",
+    "parent_file": "flow_parent_index.tif",
+    "emission_min_contributing_area_m2": 10000,
+    "velocity_requires": "calibrated rainfall runoff, water depth and Manning n; display-only speed otherwise"
+  }
+}
